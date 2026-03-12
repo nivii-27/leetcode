@@ -1,0 +1,23 @@
+#include <stdlib.h>
+#include <string.h>
+
+char* longestCommonPrefix(char** strs, int strsSize) {
+    if (strsSize == 0) return "";
+    
+    char* first = strs[0];
+    for (int i = 0; first[i] != '\0'; i++) {
+        char c = first[i];
+        for (int j = 1; j < strsSize; j++) {
+            if (strs[j][i] != c) {
+                char* result = (char*)malloc(i + 1);
+                strncpy(result, first, i);
+                result[i] = '\0';
+                return result;
+            }
+        }
+    }
+    
+    char* result = (char*)malloc(strlen(first) + 1);
+    strcpy(result, first);
+    return result;
+}
