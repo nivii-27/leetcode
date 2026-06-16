@@ -1,0 +1,40 @@
+class Solution:
+    def maxRatings(self, units: list[list[int]]) -> int:
+        m = len(units)
+        if m == 0: 
+            return 0
+        n = len(units[0])
+        
+        rows = []
+        for r in units:
+            sorted_r = sorted(r)
+            m1 = sorted_r[0]
+            m2 = sorted_r[1] if n > 1 else 0
+            rows.append((m1, m2))
+            
+        rows.sort(key=lambda x: x[0])
+        base_sum = sum(x[0] for x in rows)
+        max_extra = 0
+        
+        gains = [max(0, m2 - m1) for m1, m2 in rows]
+        
+        suff_gains = [0] * (m + 1)
+        for i in range(m - 1, -1, -1):
+            suff_gains[i] = suff_gains[i + 1] + gains[i]
+            
+        suff_max = [-float('inf')] * (m + 1)
+        for k in range(m - 1, -1, -1):
+            val = -gains[k] - rows[k][0]
+            suff_max[k] = max(suff_max[k + 1], val)
+            
+        for g in range(m):
+            extra1 = suff_gains[g + 1]
+            if extra1 > max_extra:
+                max_extra = extra1
+                
+            if g + 1 < m:
+                extra2 = suff_gains[g + 1] + rows[g][1] + suff_max[g + 1]
+                if extra2 > max_extra:
+                    max_extra = extra2
+                    
+        return base_sum + max_extra
